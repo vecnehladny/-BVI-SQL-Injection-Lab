@@ -26,7 +26,7 @@ public class Lab1Controller {
 
     public static final Logger LOGGER = Logger.getLogger("HomeController");
 
-    @GetMapping("/lab1/")
+    @GetMapping(path = {"/lab1/", "/lab1"})
     public String root(HttpSession session, Model model) throws NoSuchAlgorithmException {
         return login(null, null, session, model);
     }
