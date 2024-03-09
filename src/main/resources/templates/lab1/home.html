@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
 <head>
     <meta charset="UTF-8"/>
     <title>Lab 1 | Input Not String</title>
@@ -7,8 +7,11 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
 </head>
 <body>
 
@@ -21,7 +24,7 @@
 
             <div class="dropdown text-end">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                    <img th:src="@{/images/Basketball.png}" alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small">
                     <li><a class="dropdown-item" href="/lab1/profile/edit">Edit profile</a></li>
@@ -61,5 +64,7 @@
 
 
     <div th:replace="fragments/sqlQueryFragment :: displaySqlQuery(executedQuery=${executedQuery})"></div>
+
+    <script>hljs.highlightAll();</script>
 </body>
 </html>

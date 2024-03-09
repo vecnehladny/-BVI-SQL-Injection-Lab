@@ -26,6 +26,11 @@ public class Lab1Controller {
 
     public static final Logger LOGGER = Logger.getLogger("HomeController");
 
+    @GetMapping("/lab1/")
+    public String root(HttpSession session, Model model) throws NoSuchAlgorithmException {
+        return login(null, null, session, model);
+    }
+
     @GetMapping("/lab1/login")
     public String login(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
         String profileIdCurr = (String) session.getAttribute("profileId");
