@@ -34,3 +34,15 @@ function addAlert(code, message, type) {
     autoDeleteAlerts();
 }
 
+function validateFormLab3() {
+    var validateInputs  = document.querySelectorAll("input.validate-input");
+    for (var i = 0; i < validateInputs.length; i++) {
+        if (/[^a-zA-Z0-9\s]/.test(validateInputs[i].value)) {
+            alert("Input contains special characters. Please remove them.");
+            return false;
+        }
+    }
+
+    return true;
+}
+
