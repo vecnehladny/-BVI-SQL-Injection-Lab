@@ -13,8 +13,13 @@
     <script th:src="@{/js/highlight.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </head>
-<body>
-
+<div id="alerts" class="alerts fixed-top">
+    <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
+        <div class="container">
+            <p class="mb-0" th:text="${alert.message}"></p>
+        </div>
+    </div>
+</div>
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -28,7 +33,9 @@
                 </a>
                 <ul class="dropdown-menu text-small">
                     <li><a class="dropdown-item" href="/lab1/profile/edit">Edit profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li><a class="dropdown-item" href="/lab1/logout">Sign out</a></li>
                 </ul>
             </div>
@@ -43,7 +50,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col">
                     <ul class="list-group">
                         <li class="list-group-item">
                             <strong>Email:</strong> <span th:text="${currUser.email}"></span>
@@ -62,9 +69,11 @@
 </div>
 
 
+<div th:replace="fragments/sqlQueryFragment :: displaySqlQuery(executedQuery=${executedQuery})"></div>
 
-    <div th:replace="fragments/sqlQueryFragment :: displaySqlQuery(executedQuery=${executedQuery})"></div>
-
-    <script>hljs.highlightAll();</script>
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
 </body>
 </html>

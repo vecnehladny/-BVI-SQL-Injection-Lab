@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sk.fiit.bvi.lab.Entity.UserLab2;
 import sk.fiit.bvi.lab.Entity.mapper.StringMapper;
 import sk.fiit.bvi.lab.Entity.mapper.UserLab2Mapper;
+import sk.fiit.bvi.lab.Wrapper.Alert;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -47,6 +49,12 @@ public class Lab2Controller {
                 session.setAttribute("profileId", profileId);
                 model.addAttribute("users", users);
                 return home(session, model);
+            } else {
+                model.addAttribute("alerts",
+                                   Collections.singletonList(Alert.builder()
+                                                                  .message("Account does not exists")
+                                                                  .type("danger")
+                                                                  .build()));
             }
         }
         return "lab2/login";

@@ -1,11 +1,36 @@
-;(function () {
-    const htmlElement = document.querySelector("html")
-    if(htmlElement.getAttribute("data-bs-theme") === 'auto') {
-        function updateTheme() {
-            document.querySelector("html").setAttribute("data-bs-theme",
-                                                        window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+function init() {
+    autoSetDarkMode();
+    autoDeleteAlerts();
+}
+
+function autoSetDarkMode() {
+    ;(function () {
+        const htmlElement = document.querySelector("html")
+        if (htmlElement.getAttribute("data-bs-theme") === 'auto') {
+            function updateTheme() {
+                document.querySelector("html").setAttribute("data-bs-theme",
+                                                            window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
+            updateTheme()
         }
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
-        updateTheme()
-    }
-})()
+    })()
+}
+
+function autoDeleteAlerts() {
+    var alerts = document.querySelectorAll("#alerts .alert");
+
+    alerts.forEach(function (alerts) {
+        setTimeout(function () {
+            alerts.remove();
+        }, 5000);
+    });
+}
+
+function addAlert(code, message, type) {
+    var alertBox = document.getElementById("alerts");
+    alertBox.innerHTML += '<div class="alert alert-' + type + '"><div class="container"><p class="mb-0">' + message + '</p></div></div>';
+    autoDeleteAlerts();
+}
+
