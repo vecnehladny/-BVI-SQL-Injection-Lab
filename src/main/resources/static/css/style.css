@@ -9,3 +9,10 @@ pre {
     white-space: -o-pre-wrap;
     word-wrap: break-word;
 }
+
+#alerts {
+    width: 25%;
+    right: 20px;
+    top: 20px;
+    left: unset;
+}

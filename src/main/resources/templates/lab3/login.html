@@ -14,6 +14,12 @@
 </head>
 <body class="container vh-100 d-flex align-items-center">
 <div id="alerts" class="alerts fixed-top">
+    <div class="alert alert-info" data-persist="true">
+        <div class="container">
+            <p class="mb-0">Hint: ?profileId=' or 1=1-- -&password=a</p>
+        </div>
+    </div>
+
     <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
         <div class="container">
             <p class="mb-0" th:text="${alert.message}"></p>

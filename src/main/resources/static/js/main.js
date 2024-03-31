@@ -19,7 +19,7 @@ function autoSetDarkMode() {
 }
 
 function autoDeleteAlerts() {
-    var alerts = document.querySelectorAll("#alerts .alert");
+    var alerts = document.querySelectorAll("#alerts .alert:not([data-persist='true'])");
 
     alerts.forEach(function (alerts) {
         setTimeout(function () {
