@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 public class Lab1Service {
 
+    public static final String CTF = "af6d3d02f07448618a04d4a9223f4f36";
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -42,5 +43,9 @@ public class Lab1Service {
         String query = String.format("SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab1 u WHERE u.profile_id=%s",
                                      profileId);
         return jdbcTemplate.query(query, new UserLab1Mapper());
+    }
+
+    public String getCTF() {
+        return CTF;
     }
 }

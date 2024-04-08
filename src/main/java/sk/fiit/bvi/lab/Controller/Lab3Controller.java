@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sk.fiit.bvi.lab.Entity.UserLab2;
 import sk.fiit.bvi.lab.Entity.mapper.StringMapper;
@@ -30,10 +31,15 @@ public class Lab3Controller {
 
     @GetMapping(path = {"/lab3/", "/lab3"})
     public String root(HttpSession session, Model model) throws NoSuchAlgorithmException {
-        return login(null, null, session, model);
+        return "lab3/intro";
     }
 
     @GetMapping("/lab3/login")
+    public String loginGet(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
+        return login(profileId, password, session, model);
+    }
+
+    @PostMapping("/lab3/login")
     public String login(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
         String profileIdCurr = (String) session.getAttribute("profileId");
         if(null != profileIdCurr) { return home(session, model); }

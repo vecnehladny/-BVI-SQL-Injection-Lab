@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sk.fiit.bvi.lab.Entity.UserLab1;
 import sk.fiit.bvi.lab.Service.Lab1Service;
@@ -28,10 +29,15 @@ public class Lab1Controller {
 
     @GetMapping(path = {"/lab1/", "/lab1"})
     public String root(HttpSession session, Model model) throws NoSuchAlgorithmException {
-        return login(null, null, session, model);
+        return "lab1/intro";
     }
 
     @GetMapping("/lab1/login")
+    public String loginGet(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
+        return login(null, null, session, model);
+    }
+
+    @PostMapping("/lab1/login")
     public String login(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
         String profileIdCurr = (String) session.getAttribute(Constants.PROFILE_ID);
         if(null != profileIdCurr) { return home(session, model); }
@@ -42,6 +48,9 @@ public class Lab1Controller {
             if(!loginWrapper.getUsers().isEmpty()) {
                 session.setAttribute(Constants.PROFILE_ID, profileId);
                 model.addAttribute("users", loginWrapper.getUsers());
+                if(loginWrapper.getUsers().size() > 1) {
+                    model.addAttribute("CTF", service.getCTF());
+                }
                 return home(session, model);
             } else {
                 AlertUtils.addAlertToModel(model, "Account does not exists", AlertUtils.AlertType.DANGER);

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 3 | URL Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<div class="container">
+    <div class="card mt-5 mb-5">
+        <div class="card-header d-flex justify-content-between">
+            <h3 class="mb-0"><span class="badge text-bg-primary">Lab 3</span> URL Injection</h3>
+            <a class="btn btn-success" th:href="@{/lab3/login}"role="button">Start</a>
+        </div>
+        <div class="card-body">
+            <p>
+                Here, the SQL query remains unchanged from the previous one
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab1 u WHERE u.profile_id='123' AND u.password='tCQHkc4L57kt3VCRrmcjTl3/d454bcCjy5hGrwz4tlM='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                However, in this scenario, the malicious user input cannot be directly injected into the application via the login form. This is due to the implementation of client-side controls that prevent the submission of special characters. These safeguards are designed to block potentially harmful inputs that could exploit vulnerabilities in the system.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>function validateForm() {
+    var validateInputs  = document.querySelectorAll("input.validate-input");
+    for (var i = 0; i < validateInputs.length; i++) {
+        if (/[^a-zA-Z0-9\s]/.test(validateInputs[i].value)) {
+            alert("Input contains special characters. Please remove them.");
+            return false;
+        }
+    }
+
+    return true;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                The javascript function validateForm() above is designed to check the inputs of a form to ensure they do not contain any special characters, which are anything outside the typical alphanumeric (letters and numbers) and whitespace characters.
+            </p>
+
+            <p>
+                It's important to note that while this function improves the user experience by prompting users to correct their inputs before submitting the form, it is not an actual security feature. Since the validation is performed on the client side (in the user's browser), it can be easily bypassed by someone with malicious intent. An attacker could modify the javascript code, disable it, or simply not load it at all, and then submit harmful data to the server. Therefore, for security purposes, similar validations should also be implemented on the server side, where user data can be securely checked before being processed or stored.
+            </p>
+
+            <p>
+                In this lab scenario, when the login form is submitted, a GET request is utilized to send the data. This method involves appending the input data from the form, such as profileId and passwords, to the URL as query parameters. Using GET requests for submitting login forms can make the data visible in the browser's address bar, which might not be ideal for sensitive information like login credentials. Typically, for security reasons, a POST request is recommended for login forms as it sends data as part of the request body, not in the URL, thereby providing a more secure way of transmitting sensitive information.
+            </p>
+
+            <p>
+                The validation mechanism in place can be straightforwardly bypassed by directly modifying the URL. Since the checks are conducted client-side, entering or altering parameters in the URL allows users to bypass these controls without encountering the restrictions imposed by the validation script.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>https://host:port/lab3/login?profileId=-1' or 1=1-- -&password=a</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                The browser will automatically perform URL encoding for us, a necessary step because the HTTP protocol does not support all characters directly in the request. This process of encoding is essential for ensuring that special characters are transmitted correctly over the network. URL encoding involves converting characters that may cause conflicts or are not allowed in URLs into a format that can be safely transmitted. For instance, in URL-encoded form, the single quote (') character is converted to '%27', and the blank space is represented as '%20'. This encoded format prevents errors during the transmission of data in HTTP requests and ensures the integrity of the information being sent.
+            </p>
+
+            <p>URL encoded URL will look like this:</p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>https://host:port/lab3/login?profileId=-1%27%20or%201=1--%20-&password=a</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="accordion mt-2 mb-3" id="accordionHint">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHint" aria-expanded="false" aria-controls="collapseHint">
+                            <span class="badge text-bg-success me-1">Hint</span>Instructions
+                        </button>
+                    </h2>
+                    <div id="collapseHint" class="accordion-collapse collapse" data-bs-parent="#accordionHint">
+                        <div class="accordion-body">
+                            <div class="row mt-3 mb-3">
+                                <div class="col">
+                                    <p class="fw-bold">Login form</p>
+                                    <ol>
+                                        <li>Visit the login page</li>
+                                        <li>Enter a profile_id value</li>
+                                        <li>Enter the correct password for the chosen profile_id</li>
+                                        <li>Submit the form</li>
+                                    </ol>
+                                </div>
+                                <div class="col">
+                                    <p class="fw-bold">SQL Injetion</p>
+                                    <ol>
+                                        <li>Prepare malicious input "?profileId=-1' or 1=1-- -&password=a"</li>
+                                        <li>Modify the URL by appending the prepared malicious input</li>
+                                        <li>Leave the fields of the form blank</li>
+                                        <li>Submit the URL from the address bar</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion mb-2" id="accordionCred">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCred" aria-expanded="false" aria-controls="collapseCred">
+                            <span class="badge text-bg-success me-1">Hint</span>Credentials
+                        </button>
+                    </h2>
+                    <div id="collapseCred" class="accordion-collapse collapse" data-bs-parent="#accordionCred">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">profile_id</th>
+                                    <th scope="col">password</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>123</td>
+                                    <td>heslo123</td>
+                                </tr>
+                                <tr>
+                                    <td>456</td>
+                                    <td>heslo456</td>
+                                </tr>
+                                <tr>
+                                    <td>789</td>
+                                    <td>heslo789</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>

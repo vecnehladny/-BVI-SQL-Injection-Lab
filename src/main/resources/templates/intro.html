@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 1 | Input Not String</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<div class="container">
+    <div class="row pt-5 pb-5">
+        <div th:replace="fragments/menuFragment :: menuFragment"></div>
+        <div class="card col p-0">
+            <div class="card-header">
+                <h3>Introduction</h3>
+            </div>
+            <div class="card-body">
+                <p>SQL Injection is a prevalent and critical security vulnerability that occurs when an attacker manipulates input fields in a web application to execute arbitrary SQL commands. This lab aims to provide participants with a hands-on understanding of SQL Injection vulnerabilities, their impact, and how to prevent them.</p>
+
+                <p>Applications often require dynamic SQL queries to present content based on user-defined conditions. To enable this functionality, developers often integrate user input directly into SQL statements through concatenation. However, when input validation measures are absent, string concatenation becomes a common pitfall, leading to SQL injection vulnerabilities. In the absence of input sanitization, the database may interpret user input as SQL statements rather than data, allowing attackers to exploit this vulnerability. Essentially, attackers need control over a parameter within the SQL statement to inject malicious queries, which the database executes. If the application fails to sanitize user input from these controlled parameters, the query becomes susceptible to SQL injection attacks.</p>
+
+                <p>The subsequent PHP code illustrates a dynamic SQL query within a login form, where the username and password variables retrieved from the POST request are concatenated directly into the SQL statement.</p>
+
+                <div class="mt-3 mb-3 text-bg-dark rounded">
+                    <div class="container">
+                        <div class="d-flex flex-wrap justify-content-lg-start">
+                            <pre><code class="language-php">$query = "SELECT * FROM users WHERE username = '" + $_POST['username'] + "' AND password = '" + $_POST['password'] + "'";</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <p>If the attacker inserts the value <i>' OR 1=1-- -</i> into the name parameter, the query may return multiple users. Most applications typically process only the first user returned, allowing the attacker to exploit this behavior and potentially log in as the first user retrieved by the query. The double-dash sequence (--) functions as a comment indicator in SQL, effectively nullifying the rest of the query. In SQL, strings are enclosed within either single quotes (') or double quotes ("). The single quote (') within the input is utilized to terminate the string literal. When the attacker submits <i>' OR 1=1-- -</i> in the name parameter and leaves the password field blank, the resulting SQL statement would be as follows:</p>
+
+                <div class="mt-3 mb-3 text-bg-dark rounded">
+                    <div class="container">
+                        <div class="d-flex flex-wrap justify-content-lg-start">
+                            <pre><code>SELECT * FROM users WHERE username = '' OR 1=1-- - AND password = ''</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <p>If the SQL statement provided is executed by the database, it retrieves all users from the users table. As a result, the attacker circumvents the application's authentication process and gains access, being logged in as the first user retrieved by the query.</p>
+
+                <p>The choice of using -- - instead of just -- stems primarily from MySQL's handling of the double-dash comment style.</p>
+
+                <p>In MySQL, the -- (double-dash) comment style extends from the -- sequence to the end of the line. However, MySQL's syntax requires the second dash to be followed by at least one whitespace or control character (like a space, tab, newline, etc.).</p>
+
+                <p>It's important to note that not every SQL version, such as MySQL, Oracle, and PostgreSQL, handles comments in the same way. Each database management system may have its own specific syntax and rules regarding comments. Therefore, what works as a comment indicator in one system may not necessarily work in another.</p>
+
+                <p>To ensure compatibility and safety across different database platforms, the recommended approach for inline SQL comments is to use -- followed by a space and then any character, as in -- -. This ensures that even if it gets URL-encoded (such as --%20-), it will still be decoded as -- -.</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>
