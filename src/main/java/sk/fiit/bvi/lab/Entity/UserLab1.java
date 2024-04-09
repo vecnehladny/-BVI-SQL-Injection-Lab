@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sk.fiit.bvi.lab.Entity.mapper.UserMapperInterface;
 
 @Entity
 @Table(name = "users_lab1")
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLab1 {
+public class UserLab1 implements UserMapperInterface {
     @Id
     @Column(name = "id")
     private Long id;
@@ -57,6 +58,15 @@ public class UserLab1 {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public void setProfileIdFromObject(Object o) {
+        if (o instanceof Long longProfileId) {
+            this.profileId = longProfileId;
+        } else {
+            throw new IllegalArgumentException("profileId must be of type Long for UserLab1");
+        }
     }
 
     public String getPassword() {

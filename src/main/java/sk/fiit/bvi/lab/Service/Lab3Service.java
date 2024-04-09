@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import sk.fiit.bvi.lab.Entity.UserLab3;
+import sk.fiit.bvi.lab.Entity.mapper.GenericUserLabMapper;
 import sk.fiit.bvi.lab.Entity.mapper.StringMapper;
-import sk.fiit.bvi.lab.Entity.mapper.UserLab3Mapper;
 import sk.fiit.bvi.lab.Wrapper.LoginWrapper;
 
 import java.nio.charset.StandardCharsets;
@@ -42,6 +42,6 @@ public class Lab3Service extends AbstractLabService implements LabServiceInterfa
         String query = String.format(
                 getQuery().concat("WHERE u.profile_id='%s'"),
                 profileId);
-        return jdbcTemplate.query(query, new UserLab3Mapper());
+        return jdbcTemplate.query(query, new GenericUserLabMapper<>(UserLab3.class));
     }
 }
