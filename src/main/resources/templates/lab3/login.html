@@ -12,30 +12,33 @@
     <script th:src="@{/js/highlight.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </head>
-<body class="container vh-100 d-flex align-items-center">
-<div id="alerts" class="alerts fixed-top">
-    <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
-        <div class="container">
-            <p class="mb-0" th:text="${alert.message}"></p>
+<body>
+<div class="container vh-100 d-flex flex-column">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
+    <div id="alerts" class="alerts fixed-top">
+        <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
+            <div class="container">
+                <p class="mb-0" th:text="${alert.message}"></p>
+            </div>
         </div>
     </div>
-</div>
-<div class="row justify-content-center w-100">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Login</div>
-            <div class="card-body">
-                <form th:action="@{/lab3/login}" method="get" onsubmit="return validateFormLab3()">
-                    <div class="mb-3">
-                        <label for="profileId">Profile ID</label>
-                        <input type="text" class="form-control validate-input" id="profileId" name="profileId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Login</div>
+                <div class="card-body">
+                    <form th:action="@{/lab3/login}" method="get" onsubmit="return validateFormLab3()">
+                        <div class="mb-3">
+                            <label for="profileId">Profile ID</label>
+                            <input type="text" class="form-control validate-input" id="profileId" name="profileId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -13,6 +13,11 @@
     <script th:src="@{/js/highlight.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </head>
+<body>
+<div class="container">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
+</div>
+
 <div id="alerts" class="alerts fixed-top">
     <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
         <div class="container">

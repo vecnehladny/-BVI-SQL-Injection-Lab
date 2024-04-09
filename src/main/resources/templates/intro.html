@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
 <head>
     <meta charset="UTF-8"/>
-    <title>Lab 1 | Input Not String</title>
+    <title>SQL Injection Lab | Home</title>
 
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -14,7 +14,7 @@
     <script th:src="@{/js/main.js}"></script>
 </head>
 <div class="container">
-    <div class="row pt-5 pb-5">
+    <div>
         <div th:replace="fragments/menuFragment :: menuFragment"></div>
         <div class="card col p-0">
             <div class="card-header">
@@ -55,6 +55,12 @@
 
                 <p>To ensure compatibility and safety across different database platforms, the recommended approach for inline SQL comments is to use -- followed by a space and then any character, as in -- -. This ensures that even if it gets URL-encoded (such as --%20-), it will still be decoded as -- -.</p>
 
+                <hr>
+
+                <h4>Requirements</h4>
+                <ul>
+                    <li>Burp Suite (<a href="https://portswigger.net/burp/communitydownload">download</a>)</li>
+                </ul>
             </div>
         </div>
     </div>

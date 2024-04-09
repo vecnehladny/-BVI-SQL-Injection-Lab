@@ -13,10 +13,12 @@
     <script th:src="@{/js/highlight.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </head>
+<body>
 <div class="container">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
     <div class="card mt-5 mb-5">
         <div class="card-header d-flex justify-content-between">
-            <h3 class="mb-0"><span class="badge text-bg-primary">Lab 3</span> URL Injection</h3>
+            <h3 class="mb-0"><span th:class="'badge ' + (${session.lab3Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 3</span> URL Injection</h3>
             <a class="btn btn-success" th:href="@{/lab3/login}"role="button">Start</a>
         </div>
         <div class="card-body">

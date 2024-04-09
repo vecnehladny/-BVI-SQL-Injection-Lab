@@ -50,6 +50,7 @@ public class Lab1Controller {
                 model.addAttribute("users", loginWrapper.getUsers());
                 if(loginWrapper.getUsers().size() > 1) {
                     model.addAttribute("CTF", service.getCTF());
+                    session.setAttribute("lab1Completed", true);
                 }
                 return home(session, model);
             } else {
