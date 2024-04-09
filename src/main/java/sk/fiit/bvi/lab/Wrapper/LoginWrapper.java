@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import sk.fiit.bvi.lab.Entity.UserLab1;
 
 import java.util.List;
 
@@ -12,10 +11,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lab1HomeWrapper extends Lab1QueryWrapper {
-    List<UserLab1> users;
+public class LoginWrapper extends QueryWrapper {
+    List<String> users;
 
-    public Lab1HomeWrapper(String query, List<UserLab1> users) {
+    public LoginWrapper(String query, List<String> users) {
         this.query = query;
         this.users = users;
     }

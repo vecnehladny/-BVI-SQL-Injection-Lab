@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 4 | POST Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<div class="container">
+    <div class="card mt-5 mb-5">
+        <div class="card-header d-flex justify-content-between">
+            <h3 class="mb-0"><span class="badge text-bg-primary">Lab 4</span> POST Injection</h3>
+            <a class="btn btn-success" th:href="@{/lab4/login}"role="button">Start</a>
+        </div>
+        <div class="card-body">
+            <p>
+                This lab utilizes an identical query to the one in the preceding exercise. However, there is a distinction in how the parameters are expected to be formatted. In this instance, the parameter should be provided as a String, whereas previously, it was required to be inputted as an Integer.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>profile_id='10'</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Given that the system is configured to accept a string input, we must slightly adjust our approach to effectively bypass the login mechanism. By making this modification to our payload, we can tailor it to meet the system's expectations. The subsequent line of code is specifically crafted to facilitate our entry into the system.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>' or 1=1-- -</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="accordion mt-2 mb-3" id="accordionHint">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHint" aria-expanded="false" aria-controls="collapseHint">
+                            <span class="badge text-bg-success me-1">Hint</span>Instructions
+                        </button>
+                    </h2>
+                    <div id="collapseHint" class="accordion-collapse collapse" data-bs-parent="#accordionHint">
+                        <div class="accordion-body">
+                            <div class="row mt-3 mb-3">
+                                <div class="col">
+                                    <p class="fw-bold">Login form</p>
+                                    <ol>
+                                        <li>Visit the login page</li>
+                                        <li>Enter a profile_id value</li>
+                                        <li>Enter the correct password for the chosen profile_id</li>
+                                        <li>Submit the form</li>
+                                    </ol>
+                                </div>
+                                <div class="col">
+                                    <p class="fw-bold">SQL Injetion</p>
+                                    <ol>
+                                        <li>Use the SQL injection string "' or 1=1-- -" to bypass authentication</li>
+                                        <li>Insert the SQL injection string into the profile_id field</li>
+                                        <li>Leave the password field blank</li>
+                                        <li>Submit the form</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion mb-2" id="accordionCred">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCred" aria-expanded="false" aria-controls="collapseCred">
+                            <span class="badge text-bg-success me-1">Hint</span>Credentials
+                        </button>
+                    </h2>
+                    <div id="collapseCred" class="accordion-collapse collapse" data-bs-parent="#accordionCred">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">profile_id</th>
+                                    <th scope="col">password</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>123</td>
+                                    <td>heslo123</td>
+                                </tr>
+                                <tr>
+                                    <td>456</td>
+                                    <td>heslo456</td>
+                                </tr>
+                                <tr>
+                                    <td>789</td>
+                                    <td>heslo789</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>

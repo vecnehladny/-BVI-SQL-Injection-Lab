@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lab1QueryWrapper {
+public class QueryWrapper {
     String query;
 }

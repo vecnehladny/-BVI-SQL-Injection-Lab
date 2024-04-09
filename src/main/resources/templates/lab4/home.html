@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 4 | POST Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<div id="alerts" class="alerts fixed-top">
+    <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
+        <div class="container">
+            <p class="mb-0" th:text="${alert.message}"></p>
+        </div>
+    </div>
+</div>
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/lab4/home" class="nav-link px-2 link-secondary">Home</a></li>
+            </ul>
+
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img th:src="@{/images/Basketball.png}" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item" href="/lab4/profile/edit">Edit profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/lab4/logout">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3 th:text="${currUser.name} + '\'s Profile'"></h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>Email:</strong> <span th:text="${currUser.email}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Username:</strong> <span th:text="${currUser.username}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Profile ID:</strong> <span th:text="${currUser.profileId}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="fragments/sqlQueryFragment :: displaySqlQuery(executedQuery=${executedQuery})"></div>
+
+<script>hljs.highlightAll();</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>
