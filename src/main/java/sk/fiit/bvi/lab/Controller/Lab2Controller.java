@@ -45,7 +45,7 @@ public class Lab2Controller {
         if(null != profileIdCurr) { return home(session, model); }
         if(null != password) {
             LoginWrapper loginWrapper = service.getUsers(profileId, password);
-
+            model.addAttribute("executedQuery", loginWrapper.getQuery());
             if(!loginWrapper.getUsers().isEmpty()) {
                 session.setAttribute(Constants.PROFILE_ID, profileId);
                 model.addAttribute("users", loginWrapper.getUsers());

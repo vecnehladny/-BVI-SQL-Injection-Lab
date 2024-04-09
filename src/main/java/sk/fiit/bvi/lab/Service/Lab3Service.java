@@ -15,14 +15,13 @@ import java.util.Base64;
 import java.util.List;
 
 @Service
-public class Lab3Service {
-
-    public static final String CTF = "ed58ec329fe189ac30abbcc9166d6610";
-    private final JdbcTemplate jdbcTemplate;
+public class Lab3Service extends AbstractLabService implements LabServiceInterface<UserLab3> {
 
     @Autowired
     public Lab3Service(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        super(jdbcTemplate);
+        setCTF("ed58ec329fe189ac30abbcc9166d6610");
+        setQuery("SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab3 u ");
     }
 
     public LoginWrapper getUsers(String profileId, String password) throws NoSuchAlgorithmException {
@@ -31,7 +30,7 @@ public class Lab3Service {
         String encoded = Base64.getEncoder()
                                .encodeToString(hash);
         String query = String.format(
-                "SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab3 u WHERE u.profile_id='%s' AND u.password='%s'",
+                getQuery().concat("WHERE u.profile_id='%s' AND u.password='%s'"),
                 profileId,
                 encoded);
 
@@ -41,12 +40,8 @@ public class Lab3Service {
 
     public List<UserLab3> getUser(String profileId) {
         String query = String.format(
-                "SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab3 u WHERE u.profile_id='%s'",
+                getQuery().concat("WHERE u.profile_id='%s'"),
                 profileId);
         return jdbcTemplate.query(query, new UserLab3Mapper());
-    }
-
-    public String getCTF() {
-        return CTF;
     }
 }
