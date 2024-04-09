@@ -56,7 +56,7 @@ public class Lab1Controller {
                 AlertUtils.addAlertToModel(model, "Account does not exists", AlertUtils.AlertType.DANGER);
             }
         }
-        return "lab1/login";
+        return Constants.LAB_1_LOGIN_VIEW;
     }
 
     @GetMapping("lab1/home")
@@ -69,7 +69,7 @@ public class Lab1Controller {
             }
             return "lab1/home";
         }
-        return "lab1/login";
+        return Constants.LAB_1_LOGIN_VIEW;
     }
 
     @GetMapping("lab1/logout")
@@ -77,8 +77,8 @@ public class Lab1Controller {
         String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
         if(null != profileId) {
             session.removeAttribute(Constants.PROFILE_ID);
-            return "lab1/login";
+            return Constants.LAB_1_LOGIN_VIEW;
         }
-        return "lab1/login";
+        return Constants.LAB_1_LOGIN_VIEW;
     }
 }
