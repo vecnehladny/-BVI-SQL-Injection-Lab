@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 5 | UPDATE Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
+    <div class="card mt-5 mb-5">
+        <div class="card-header d-flex justify-content-between">
+            <h3 class="mb-0"><span th:class="'badge ' + (${session.lab5Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 5</span> UPDATE Injection</h3>
+            <a class="btn btn-success" th:href="@{/lab5/login}"role="button">Start</a>
+        </div>
+        <div class="card-body">
+            <p>
+                If a SQL injection vulnerability exists within an UPDATE statement on a web application, the potential for damage escalates significantly as this allows unauthorized modifications to database records. Consider a scenario within the application where there is an edit profile page.
+            </p>
+
+            <p>
+                This page permits users to update their personal information. However, access to modify certain fields is restricted, meaning users can only alter specific details pertaining to their own profiles. Should this form be susceptible to SQL injection, it would enable an attacker to circumvent these restrictions, potentially modifying fields that should be inaccessible or altering information for other users.
+            </p>
+
+            <p>
+                We plan to probe the database using the UPDATE statement on the profile edit page, proceeding under the assumption that we possess no prior knowledge of the database's structure. By inspecting the HTML source code of the web page, we can deduce likely column names from the "name" attributes associated with the form fields. While these attributes do not guarantee the actual column names, they often provide reliable hints. Common column identifiers such as "email" and "password" are typically straightforward to predict.
+            </p>
+
+            <p>
+                To verify the form's vulnerability and the accuracy of our guessed column names, we attempt to inject a specific payload into the email field. It's important to note that during this test, the email field is used for the injection while other fields are left empty:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>hacked',username='hacked',password='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                After executing this injection, if the email and the other specified fields (username and password) are updated, it confirms the form's vulnerability and the correctness of the column names. A failure to update indicates incorrect column names. The underlying SQL command likely resembles the following structure:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>UPDATE <&zwj;table_name> SET username='name', email='email' WHERE <&zwj;condition></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Armed with this understanding, our next step involves determining the type of database management system. Various queries can be crafted to reveal the database type:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code># MySQL and MSSQL
+',username=@@version,password='
+# For Oracle
+',username=(SELECT banner FROM v$version),password='
+# For SQLite
+',username=sqlite_version(),password='
+# For PostgreSQL
+',username=version(),password='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Injecting a query with "version()" into the email field disclosed that we are interacting with a PostgreSQL 16.0 database, compiled by Visual C++ build 1935, 64-bit. This information not only confirms the database type but also guides further specific exploitation or security measures.
+            </p>
+
+            <p>
+                Identifying the type of database involved simplifies the process of formulating our SQL injection attacks. With this knowledge, we can tailor our queries to exploit specific features of the database system. One common objective is to enumerate the database by extracting details about its structure. The following example demonstrates how to perform a subquery to retrieve all table names in the database, inserting them into the username field. The subquery is enclosed in parentheses, and the string_agg() function is employed to concatenate the names of all the tables into a single string.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>',username=(SELECT string_agg(table_name, ',') FROM information_schema.tables WHERE table_schema='public' AND table_name NOT LIKE 'pg_%'),password='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Injecting the above code allows us to uncover the existence of multiple tables within the database: users_lab1, users_lab2, users_lab3, users_lab4, users_lab5. This insight is pivotal as it shows us the scope of data stored and provides a roadmap for deeper investigation.
+            </p>
+
+            <p>
+                Moving forward, our next step is to delve into specific tables to extract further details, such as column names. We continue by targeting a specific table, named users_lab5, to fetch its schema. This is accomplished through another injection:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>',username=(SELECT string_agg(column_name || ' ' || data_type || ' ' || COALESCE(character_maximum_length::text, ''), ', ' ORDER BY ordinal_position) FROM information_schema.columns WHERE table_name='users_lab5' AND table_schema='public'),password='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Executing this query reveals the structure of the users_lab5, listing the columns it contains:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>id bigint , email character varying 255, name character varying 255, password character varying 255, profile_id character varying 255, username character varying 255</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                By understanding the structure of the database and knowing the column names, we are equipped to extract specific data from it. The following SQL injection example demonstrates how to retrieve key details—such as profileId, name, and password—from the table users_lab5. This is achieved using the string_agg() function, which allows us to concatenate multiple column values for each record into a single string, separated by commas, and then each record separated by colons. This method aggregates all the relevant data in one query, streamlining the data extraction process.
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>',username=(SELECT string_agg(profile_id || ',' || name || ',' || password, ':' ORDER BY profile_id) FROM users_lab5),password='</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Upon executing this injection, the output might look something like this:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>123,John Doe,tCQHkc4L57kt3VCRrmcjTl3/d454bcCjy5hGrwz4tlM=:456,Jane Smith,pIRIo5SdozzTCElqyAa5G5qnOddrhX9Bio9l58eHZGA=:789,Bob Jones,wS0IQzXBoJXU19kR5wGjQfM38LRAmZUGUKC1chIhTGA=:999,Super Admin,JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                From the results, we observe that the passwords are hashed, indicating a need for further processing to exploit this information effectively. To manipulate or utilize these passwords, the first step is to determine the hashing algorithm used, which appears to be SHA256 based on the hash structure and length. Recognizing the hash format is crucial for any attempt to crack or replicate the hashing for authentication bypass.
+            </p>
+
+            <p>
+                There are various methods available for generating a SHA256 hash. If one wishes to update or replace the password for a specific user, such as the 'Admin', the next step involves crafting a SQL command to replace the existing hash with a new one. Below is an example of how one might structure such an SQL injection to update the 'Admin' user's password:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>', password='008c70392e3abfbd0fa47bbc2ed96aa99bd49e159727fcba0f2e6abeb3a9d601' WHERE username='Admin'-- -</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                This code effectively replaces the password of the 'Admin' account with a predefined SHA256 hash. Using such targeted SQL injections not only demonstrates potential vulnerabilities but also highlights the importance of secure coding practices and the necessity for rigorous security measures in database management and web application deployment.
+            </p>
+
+        </div>
+        <div class="card-footer">
+            <div class="accordion mt-2 mb-3" id="accordionHint">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHint" aria-expanded="false" aria-controls="collapseHint">
+                            <span class="badge text-bg-success me-1">Hint</span>Instructions
+                        </button>
+                    </h2>
+                    <div id="collapseHint" class="accordion-collapse collapse" data-bs-parent="#accordionHint">
+                        <div class="accordion-body">
+                            <div class="row mt-3 mb-3">
+                                <div class="col">
+                                    <p class="fw-bold">Login form</p>
+                                    <ol>
+                                        <li>Visit the login page</li>
+                                        <li>Enter a profile_id value</li>
+                                        <li>Enter the correct password for the chosen profile_id</li>
+                                        <li>Submit the form</li>
+                                    </ol>
+                                </div>
+                                <div class="col">
+                                    <p class="fw-bold">SQL Injetion</p>
+                                    <ol>
+                                        <li>Use the web page’s source code to identify potential column names by inspecting the "name" attributes in form fields. These often provide hints about underlying database column names.</li>
+                                        <li>Inject a test payload into the email field of the form to check for SQL injection vulnerability. Leave other fields empty.</li>
+                                        <li>Confirm the structure of the underlying SQL UPDATE command if the injection updates the email along with username and password. If not, the guessed column names are likely incorrect.</li>
+                                        <li>Inject specific payloads to reveal the database type.</li>
+                                        <li>Inject a query to list all table names in the database using a function like string_agg().</li>
+                                        <li>Target a specific table to retrieve its schema by injecting.</li>
+                                        <li>Extract critical data such as profile IDs, names, and hashed passwords from a specified table.</li>
+                                        <li>Based on the structure and length of the hashes, identify them.</li>
+                                        <li>Craft an SQL command to update the password for a specific user, such as 'Admin', using a known SHA256 hash.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion mb-2" id="accordionCred">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCred" aria-expanded="false" aria-controls="collapseCred">
+                            <span class="badge text-bg-success me-1">Hint</span>Credentials
+                        </button>
+                    </h2>
+                    <div id="collapseCred" class="accordion-collapse collapse" data-bs-parent="#accordionCred">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">profile_id</th>
+                                    <th scope="col">password</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>123</td>
+                                    <td>heslo123</td>
+                                </tr>
+                                <tr>
+                                    <td>456</td>
+                                    <td>heslo456</td>
+                                </tr>
+                                <tr>
+                                    <td>789</td>
+                                    <td>heslo789</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>
