@@ -27,10 +27,10 @@
             <div class="card">
                 <div class="card-header">Login</div>
                 <div class="card-body">
-                    <form th:action="@{/lab4/login}" method="post">
+                    <form th:action="@{/lab4/login}" method="post" onsubmit="return validateFormLab()">
                         <div class="mb-3">
                             <label for="profileId">Profile ID</label>
-                            <input type="text" class="form-control" id="profileId" name="profileId" required>
+                            <input type="text" class="form-control validate-input" id="profileId" name="profileId" required>
                         </div>
                         <div class="mb-3">
                             <label for="password">Password</label>

@@ -39,7 +39,7 @@ public class Lab4Service extends AbstractLabService implements LabServiceInterfa
     }
 
     public List<UserLab4> getUser(String profileId) {
-        String query = String.format(getQuery().concat("WHERE u.profile_id=%s"),
+        String query = String.format(getQuery().concat("WHERE u.profile_id='%s'"),
                                      profileId);
         return jdbcTemplate.query(query, new GenericUserLabMapper<>(UserLab4.class));
     }

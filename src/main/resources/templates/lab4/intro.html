@@ -23,28 +23,17 @@
         </div>
         <div class="card-body">
             <p>
-                This lab utilizes an identical query to the one in the preceding exercise. However, there is a distinction in how the parameters are expected to be formatted. In this instance, the parameter should be provided as a String, whereas previously, it was required to be inputted as an Integer.
+                When participating in this challenge, the login form is configured to submit data using the HTTP POST method. There are a couple of strategies that can be employed to bypass the JavaScript that validates the login form. One option is to either remove or disable the JavaScript that performs the validation directly in the browser. This can be achieved by using browser developer tools to edit or disable the JavaScript code. Alternatively, you can initially submit a legitimate request that passes the client-side validation and then intercept and modify it using a proxy tool such as Burp Suite.
             </p>
 
-            <div class="mt-3 mb-3 text-bg-dark rounded">
-                <div class="container">
-                    <div class="d-flex flex-wrap justify-content-lg-start">
-                        <pre><code>profile_id='10'</code></pre>
-                    </div>
-                </div>
-            </div>
+            <p class="text-center">
+                <img class="my-3 border col-12 col-sm-10 col-md-8" th:src="@{/images/burpsuite.png}"/>
+            </p>
+
 
             <p>
-                Given that the system is configured to accept a string input, we must slightly adjust our approach to effectively bypass the login mechanism. By making this modification to our payload, we can tailor it to meet the system's expectations. The subsequent line of code is specifically crafted to facilitate our entry into the system.
+                By using Burp Suite, you can intercept and modify HTTP request to test and analyze security mechanisms of web applications.
             </p>
-
-            <div class="mt-3 mb-3 text-bg-dark rounded">
-                <div class="container">
-                    <div class="d-flex flex-wrap justify-content-lg-start">
-                        <pre><code>' or 1=1-- -</code></pre>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="card-footer">
             <div class="accordion mt-2 mb-3" id="accordionHint">
@@ -69,10 +58,11 @@
                                 <div class="col">
                                     <p class="fw-bold">SQL Injetion</p>
                                     <ol>
-                                        <li>Use the SQL injection string "' or 1=1-- -" to bypass authentication</li>
-                                        <li>Insert the SQL injection string into the profile_id field</li>
-                                        <li>Leave the password field blank</li>
-                                        <li>Submit the form</li>
+                                        <li>First, download and install Burp Suite if you haven’t already. Configure your web browser to use Burp Suite as its proxy server. This typically involves setting the browser’s HTTP and HTTPS proxy settings to 127.0.0.1 with the port set to 8080, which is the default port used by Burp Suite. In case some other process is using default port, set it to a different one.</li>
+                                        <li>Launch Burp Suite and ensure that the "Intercept is on" feature is active. This can be found in the "Proxy" tab and then the "Intercept" sub-tab. With intercept turned on, Burp Suite will capture the outgoing and incoming HTTP requests and responses in the Burp's browser</li>
+                                        <li>Open the Burp's browser and submit the login form with any data you want. Because Burp Suite is set as your proxy, the request will be captured and held in Burp Suite instead of being sent directly to the server.</li>
+                                        <li>In Burp Suite, under the "Proxy" tab and the "Intercept" sub-tab, you will see the current intercepter request. Locate the payload of the request and modify it with profileId=' or 1=1-- -</li>
+                                        <li>Once you've made the necessary modifications to the request, forward it to the server. You can do this by clicking the "Forward" button in Burp Suite. If additional requests are captured and you want to continue without intercepting, you can click "Forward" to send each one or "Intercept is off" to let all subsequent traffic pass through until you choose to intercept again.</li>
                                     </ol>
                                 </div>
                             </div>

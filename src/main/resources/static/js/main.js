@@ -34,7 +34,7 @@ function addAlert(code, message, type) {
     autoDeleteAlerts();
 }
 
-function validateFormLab3() {
+function validateFormLab() {
     var validateInputs  = document.querySelectorAll("input.validate-input");
     for (var i = 0; i < validateInputs.length; i++) {
         if (/[^a-zA-Z0-9\s]/.test(validateInputs[i].value)) {
