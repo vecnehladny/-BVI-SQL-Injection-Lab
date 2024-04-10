@@ -1,10 +1,14 @@
-<nav id="side-menu" th:fragment="menuFragment">
-    <ul class="dropdown-menu d-flex flex-row mt-3 mb-3" style="position: static; display: block;">
-        <li><a class="dropdown-item" th:href="@{/}">Introduction</a></li>
-        <li><a class="dropdown-item" th:href="@{/lab1}"><span th:class="'badge ' + (${session.lab1Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 1</span> Input Not String</a></li>
-        <li><a class="dropdown-item" th:href="@{/lab2}"><span th:class="'badge ' + (${session.lab2Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 2</span> Input is String</a></li>
-        <li><a class="dropdown-item" th:href="@{/lab3}"><span th:class="'badge ' + (${session.lab3Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 3</span> URL Injection</a></li>
-        <li><a class="dropdown-item" th:href="@{/lab4}"><span th:class="'badge ' + (${session.lab4Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 4</span> POST Injection</a></li>
-        <!-- Add more menu items as needed -->
-    </ul>
+<nav class="card mt-3 mb-3 navbar navbar-expand-lg" th:fragment="menuFragment">
+    <div class="w-100 px-3 px-lg-0">
+        <ul class="navbar-nav justify-content-around w-100">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">Introduction</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab1}"><span th:class="'badge ' + (${session.lab1Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 1</span> Input Not String</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab2}"><span th:class="'badge ' + (${session.lab2Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 2</span> Input is String</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab3}"><span th:class="'badge ' + (${session.lab3Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 3</span> URL Injection</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab4}"><span th:class="'badge ' + (${session.lab4Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 4</span> POST Injection</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab5}"><span th:class="'badge ' + (${session.lab5Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 5</span> UPDATE Injection</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/lab6}"><span th:class="'badge ' + (${session.lab6Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 6</span> UNION Injection</a></li>
+            <!-- Add more menu items as needed -->
+        </ul>
+    </div>
 </nav>
