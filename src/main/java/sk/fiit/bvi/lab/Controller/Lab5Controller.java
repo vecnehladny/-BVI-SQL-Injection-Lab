@@ -38,16 +38,24 @@ public class Lab5Controller {
         return login(null, null, session, model);
     }
 
+    @PostMapping("/lab5/verify-ctf")
+    public String verifyCtf(@RequestParam(required = false) String toVerify, HttpSession session, Model model) {
+        if(service.getCTF().equals(toVerify)) {
+            session.setAttribute("lab5Completed", true);
+        }
+        return "lab5/intro";
+    }
+
     @PostMapping("/lab5/login")
     public String login(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
-        String profileIdCurr = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileIdCurr = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileIdCurr) { return home(session, model); }
         if(null != password) {
             LoginWrapper loginWrapper = service.getUsers(profileId, password);
             model.addAttribute("executedQuery", loginWrapper.getQuery());
 
             if(!loginWrapper.getUsers().isEmpty()) {
-                session.setAttribute(Constants.PROFILE_ID, profileId);
+                session.setAttribute(Constants.PROFILE_ID_LAB_5, profileId);
                 model.addAttribute("users", loginWrapper.getUsers());
                 if(loginWrapper.getUsers().size() > 1) {
                 }
@@ -61,7 +69,7 @@ public class Lab5Controller {
 
     @GetMapping("lab5/home")
     public String home(HttpSession session, Model model) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileId) {
             List<UserLab5> users = service.getUser(profileId);
             if(!users.isEmpty()) {
@@ -74,7 +82,7 @@ public class Lab5Controller {
 
     @GetMapping("lab5/profile/edit")
     public String profileEdit(HttpSession session, Model model) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileId) {
             List<UserLab5> users = service.getUser(profileId);
             if(!users.isEmpty()) {
@@ -87,14 +95,13 @@ public class Lab5Controller {
 
     @PostMapping("lab5/profile/edit")
     public String performProfileEdit(Lab5EditProfileDto newProfileData, HttpSession session, Model model) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileId) {
             service.editUser(profileId, newProfileData);
             List<UserLab5> users = service.getUser(profileId);
             if(!users.isEmpty()) {
                 model.addAttribute("currUser", users.get(0));
-                model.addAttribute("CTF", service.getCTF());
-                session.setAttribute("lab5Completed", true);
+                model.addAttribute("lab5CTF", service.getCTF());
             }
         }
         return "lab5/home";
@@ -102,9 +109,9 @@ public class Lab5Controller {
 
     @GetMapping("lab5/logout")
     public String logout(HttpSession session) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileId) {
-            session.removeAttribute(Constants.PROFILE_ID);
+            session.removeAttribute(Constants.PROFILE_ID_LAB_5);
             return "lab5/login";
         }
         return "lab5/login";

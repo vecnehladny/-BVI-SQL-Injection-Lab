@@ -39,19 +39,26 @@ public class Lab2Controller {
         return login(null, null, session, model);
     }
 
+    @PostMapping("/lab2/verify-ctf")
+    public String verifyCtf(@RequestParam(required = false) String toVerify, HttpSession session, Model model) {
+        if(service.getCTF().equals(toVerify)) {
+            session.setAttribute("lab2Completed", true);
+        }
+        return "lab2/intro";
+    }
+
     @PostMapping("/lab2/login")
     public String login(@RequestParam(required = false) String profileId, @RequestParam(required = false) String password, HttpSession session, Model model) throws NoSuchAlgorithmException {
-        String profileIdCurr = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileIdCurr = (String) session.getAttribute(Constants.PROFILE_ID_LAB_2);
         if(null != profileIdCurr) { return home(session, model); }
         if(null != password) {
             LoginWrapper loginWrapper = service.getUsers(profileId, password);
             model.addAttribute("executedQuery", loginWrapper.getQuery());
             if(!loginWrapper.getUsers().isEmpty()) {
-                session.setAttribute(Constants.PROFILE_ID, profileId);
+                session.setAttribute(Constants.PROFILE_ID_LAB_2, profileId);
                 model.addAttribute("users", loginWrapper.getUsers());
                 if(loginWrapper.getUsers().size() > 1) {
-                    model.addAttribute("CTF", service.getCTF());
-                    session.setAttribute("lab2Completed", true);
+                    model.addAttribute("lab2CTF", service.getCTF());
                 }
                 return home(session, model);
             } else {
@@ -63,7 +70,7 @@ public class Lab2Controller {
 
     @GetMapping("/lab2/home")
     public String home(HttpSession session, Model model) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_2);
         if(null != profileId) {
             List<UserLab2> users = service.getUser(profileId);
             if(!users.isEmpty()) {
@@ -76,9 +83,9 @@ public class Lab2Controller {
 
     @GetMapping("/lab2/logout")
     public String logout(HttpSession session) {
-        String profileId = (String) session.getAttribute(Constants.PROFILE_ID);
+        String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_2);
         if(null != profileId) {
-            session.removeAttribute(Constants.PROFILE_ID);
+            session.removeAttribute(Constants.PROFILE_ID_LAB_2);
             return Constants.LAB_2_LOGIN_VIEW;
         }
         return Constants.LAB_2_LOGIN_VIEW;

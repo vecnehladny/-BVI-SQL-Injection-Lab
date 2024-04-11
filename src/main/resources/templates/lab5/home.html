@@ -49,7 +49,7 @@
 </header>
 
 <div class="container mt-5">
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-header d-flex justify-content-between">
             <h3 th:text="${currUser.name} + '\'s Profile'"></h3>
             <a class="btn btn-outline-secondary w-auto" href="/lab5/profile/edit">Edit profile</a>
@@ -70,6 +70,17 @@
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="card mb-3" th:if="${lab5CTF != null}">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-center align-items-center">
+                <img th:src="@{/images/party-popper.png}" alt="party-popper" width="32" height="32" class="me-3">
+                <h6 class="m-0 me-3" th:text="${lab5CTF}"></h6>
+                <img th:src="@{/images/party-popper.png}" alt="party-popper" width="32" height="32">
+            </div>
+            <div class="text-center">Copy the flag and submit in the intro of the lab</div>
         </div>
     </div>
 </div>

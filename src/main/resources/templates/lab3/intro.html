@@ -95,6 +95,28 @@
             </div>
         </div>
         <div class="card-footer">
+
+            <div class="accordion mt-2 mb-3" id="accordionCtf">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCtf" aria-expanded="false" aria-controls="collapseCtf">
+                            <span class="badge text-bg-info me-1">CTF</span>Submit
+                        </button>
+                    </h2>
+                    <div id="collapseCtf" class="accordion-collapse collapse" data-bs-parent="#accordionCtf">
+                        <div class="accordion-body">
+                            <form th:action="@{/lab3/verify-ctf}" method="post">
+                                <div class="mb-3">
+                                    <label for="toVerify">Flag</label>
+                                    <input type="text" class="form-control" id="toVerify" name="toVerify" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Verify</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="accordion mt-2 mb-3" id="accordionHint">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
