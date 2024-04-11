@@ -9,4 +9,5 @@ public class Constants {
     public static final String PROFILE_ID_LAB_3 = "profileIdLab3";
     public static final String PROFILE_ID_LAB_4 = "profileIdLab4";
     public static final String PROFILE_ID_LAB_5 = "profileIdLab5";
+    public static final String PROFILE_ID_LAB_6 = "profileIdLab6";
 }

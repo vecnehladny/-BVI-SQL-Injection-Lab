@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 6 | UNION Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
+</div>
+
+<div id="alerts" class="alerts fixed-top">
+    <div th:class="'alert alert-' + ${alert.type}" th:each="alert : ${alerts}">
+        <div class="container">
+            <p class="mb-0" th:text="${alert.message}"></p>
+        </div>
+    </div>
+</div>
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/lab6/home" class="nav-link px-2 link-secondary">Home</a></li>
+            </ul>
+
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img th:src="@{/images/Basketball.png}" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item" href="#">Edit profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/lab6/logout">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-5">
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3 th:text="${currUser.name} + '\'s Profile'"></h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Large placeholder for title -->
+                    <div class="placeholder placeholder-lg"></div>
+                    <!-- Smaller placeholders for text lines -->
+                    <div class="placeholder"></div>
+                    <div class="placeholder"></div>
+                    <div class="placeholder"></div>
+                    <!-- A larger one maybe for a subheader or important line -->
+                    <div class="placeholder placeholder-lg"></div>
+                    <!-- More text placeholders -->
+                    <div class="placeholder"></div>
+                    <div class="placeholder"></div>
+                </div>
+                <div class="col-md-4">
+                    <!-- Placeholder rectangles in another column -->
+                    <div class="placeholder placeholder-lg"></div>
+                    <div class="placeholder"></div>
+                    <div class="placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3" th:if="${lab6CTF != null}">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-center align-items-center">
+                <img th:src="@{/images/party-popper.png}" alt="party-popper" width="32" height="32" class="me-3">
+                <h6 class="m-0 me-3" th:text="${lab6CTF}"></h6>
+                <img th:src="@{/images/party-popper.png}" alt="party-popper" width="32" height="32">
+            </div>
+            <div class="text-center">Copy the flag and submit in the intro of the lab</div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="fragments/sqlQueryFragment :: displaySqlQuery(executedQuery=${executedQuery})"></div>
+
+<script>hljs.highlightAll();</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>

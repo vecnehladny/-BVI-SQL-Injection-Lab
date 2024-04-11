@@ -21,3 +21,17 @@ pre {
     background-color: rgba(0,0,0,0.05);
     border-radius: 5px;
 }
+
+.placeholder {
+    background-color: #e0e0e0 !important; /* Light grey background */
+    border-radius: 4px !important; /* Optional: adds rounded corners */
+    height: 20px !important; /* Mimics the height of a text line */
+    margin-bottom: 10px !important; /* Spacing between lines */
+    width: 100% !important;
+    cursor: auto !important;
+}
+.placeholder-lg {
+    height: 30px !important;
+    margin-top: 20px;
+    margin-bottom: 15px !important;/* Larger rectangle for headings */
+}

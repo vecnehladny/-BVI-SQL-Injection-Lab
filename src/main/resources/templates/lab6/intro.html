@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lab 6 | UNION Injection</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/monokai-sublime.css}">
+    <script th:src="@{/js/highlight.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/menuFragment :: menuFragment"></div>
+    <div class="card mt-5 mb-5">
+        <div class="card-header d-flex justify-content-between">
+            <h3 class="mb-0"><span th:class="'badge ' + (${session.lab6Completed} ? 'text-bg-success' : 'text-bg-warning')">Lab 6</span> UNION Injection</h3>
+            <a class="btn btn-success" th:href="@{/lab6/login}"role="button">Start</a>
+        </div>
+        <div class="card-body">
+            <p>
+                The login form remains susceptible to SQL injection, enabling an attacker to bypass authentication using the SQL injection technique ' OR 1=1-- - as the username.
+            </p>
+
+            <p>
+                Before attempting to extract passwords, it is crucial to locate where the application displays query results. After a successful login, the application displays the name of the currently logged-in user at the top of the page, followed by "'s profile." This could potentially be a point where data can be extracted.
+            </p>
+
+            <p>
+                For dumping passwords, a UNION-based SQL injection can be employed. However, this method requires meeting two essential criteria:
+            </p>
+
+            <ol>
+                <li>Column Match: The number of columns in the injected query must exactly match the number of columns in the original query.</li>
+                <li>Data Type Match: The data types in each column of the injected query must align with those in the original query.</li>
+            </ol>
+
+            <p>
+                The login process involves the following SQL query, which retrieves multiple columns:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>SELECT u.id, u.name, u.profile_id, u.email, u.username FROM users_lab6 u WHERE u.profile_id='?' AND u.password='?'</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Without prior knowledge of the column count, the attacker needs to enumerate the columns by methodically injecting queries with varying numbers of columns until a successful injection occurs. This process involves trial and error with different queries such as:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>a' UNION SELECT NULL-- -
+a' UNION SELECT NULL, NULL-- -
+a' UNION SELECT NULL, NULL, NULL-- -
+a' UNION SELECT NULL, NULL, NULL, NULL-- -
+a' UNION SELECT NULL, NULL, NULL, NULL, NULL-- -</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                A successful injection here means the application logs in, indicating the correct number of columns has been matched. Alternatively, if error messages are enabled, the application may display a message like "each UNION query must have the same number of columns" when the incorrect number is used.
+            </p>
+
+            <p>
+                Using the injection ' UNION SELECT NULL, NULL, NULL, NULL, NULL-- - as the username, we match the number of columns in the original query, leading to a successful login. Post-login, the username is shown as null, reflecting the second column's data from our injected query.
+            </p>
+
+            <p>
+                To further explore the database, similar to what was done in Lab 5, the ultimate goal is to dump all passwords. Assuming the relevant table is named users_lab6 and contains a column named password, the passwords can potentially be dumped with the following SQL injection:
+            </p>
+
+            <div class="mt-3 mb-3 text-bg-dark rounded">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-lg-start">
+                        <pre><code>' UNION SELECT 1, password, name, profile_id, email FROM users_lab6-- -</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                This code leverages the UNION SQL command to combine the results of two SELECT statements, allowing unauthorized access to sensitive data if the column and data type conditions are correctly met.
+            </p>
+
+        </div>
+        <div class="card-footer">
+
+            <div class="accordion mt-2 mb-3" id="accordionCtf">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCtf" aria-expanded="false" aria-controls="collapseCtf">
+                            <span class="badge text-bg-info me-1">CTF</span>Submit
+                        </button>
+                    </h2>
+                    <div id="collapseCtf" class="accordion-collapse collapse" data-bs-parent="#accordionCtf">
+                        <div class="accordion-body">
+                            <form th:action="@{/lab6/verify-ctf}" method="post">
+                                <div class="mb-3">
+                                    <label for="toVerify">Flag</label>
+                                    <input type="text" class="form-control" id="toVerify" name="toVerify" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Verify</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion mt-2 mb-3" id="accordionHint">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHint" aria-expanded="false" aria-controls="collapseHint">
+                            <span class="badge text-bg-success me-1">Hint</span>Instructions
+                        </button>
+                    </h2>
+                    <div id="collapseHint" class="accordion-collapse collapse" data-bs-parent="#accordionHint">
+                        <div class="accordion-body">
+                            <div class="row mt-3 mb-3">
+                                <div class="col">
+                                    <p class="fw-bold">Login form</p>
+                                    <ol>
+                                        <li>Visit the login page</li>
+                                        <li>Enter a profile_id value</li>
+                                        <li>Enter the correct password for the chosen profile_id</li>
+                                        <li>Submit the form</li>
+                                    </ol>
+                                </div>
+                                <div class="col">
+                                    <p class="fw-bold">SQL Injetion</p>
+                                    <ol>
+                                        <li>Use the SQL injection string ' OR 1=1-- - as the username to bypass the login form authentication.</li>
+                                        <li>Determine where the application displays query results, such as the name of the logged-in user displayed at the top of the page, which may be used to extract data.</li>
+                                        <li>Ensure that the number of columns in the injected query matches the number of columns in the original query and ensure that the data types in the injected query align with those in the original query.</li>
+                                        <li>Inject queries with varying numbers of columns to identify the correct column count needed for a successful UNION injection. Example queries:</li>
+                                        <li>Use a specific injection "' UNION SELECT NULL, NULL, NULL, NULL, NULL-- -" that matches the number of columns and data types</li>
+                                        <li>Assuming the relevant table is named users_lab6 and it contains a column named password, execute the following SQL injection to dump all passwords. "' UNION SELECT 1, password, name, profile_id, email FROM users_lab6-- -"</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion mb-2" id="accordionCred">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCred" aria-expanded="false" aria-controls="collapseCred">
+                            <span class="badge text-bg-success me-1">Hint</span>Credentials
+                        </button>
+                    </h2>
+                    <div id="collapseCred" class="accordion-collapse collapse" data-bs-parent="#accordionCred">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">profile_id</th>
+                                    <th scope="col">password</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>123</td>
+                                    <td>heslo123</td>
+                                </tr>
+                                <tr>
+                                    <td>456</td>
+                                    <td>heslo456</td>
+                                </tr>
+                                <tr>
+                                    <td>789</td>
+                                    <td>heslo789</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', init());
+</script>
+</body>
+</html>
