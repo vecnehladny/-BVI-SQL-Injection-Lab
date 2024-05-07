@@ -55,6 +55,13 @@
    ```bash
    mvn clean install
    ```
+   
+6. Run Application:
+   ```bash
+   mvn spring-boot:run
+   ```
+   
+7. Open Application at localhost:8080
 
 ### Windows
 
@@ -75,3 +82,9 @@
    ```cmd
    mvn clean install
    ```
+   
+6. Run Application:
+   ```bash
+   mvn spring-boot:run
+   ```
+7. Open Application at localhost:8080
