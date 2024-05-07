@@ -8,6 +8,7 @@ import sk.fiit.bvi.lab.Dto.Lab5EditProfileDto;
 import sk.fiit.bvi.lab.Entity.UserLab5;
 import sk.fiit.bvi.lab.Entity.mapper.GenericUserLabMapper;
 import sk.fiit.bvi.lab.Entity.mapper.StringMapper;
+import sk.fiit.bvi.lab.Wrapper.EditWrapper;
 import sk.fiit.bvi.lab.Wrapper.LoginWrapper;
 
 import java.nio.charset.StandardCharsets;
@@ -47,7 +48,7 @@ public class Lab5Service extends AbstractLabService implements LabServiceInterfa
         return jdbcTemplate.query(query, new GenericUserLabMapper<>(UserLab5.class));
     }
 
-    public void editUser(String profileId, Lab5EditProfileDto newProfileData) {
+    public EditWrapper editUser(String profileId, Lab5EditProfileDto newProfileData) {
         StringBuilder sb = new StringBuilder("UPDATE users_lab5 SET ");
         if (StringUtils.isNotBlank(newProfileData.getEmail())) {
             sb.append("email='")
@@ -62,6 +63,7 @@ public class Lab5Service extends AbstractLabService implements LabServiceInterfa
         sb.append(" WHERE profile_id='")
           .append(profileId)
           .append("'");
-        jdbcTemplate.update(sb.toString());
+        int update = jdbcTemplate.update(sb.toString());
+        return new EditWrapper(sb.toString(), update);
     }
 }

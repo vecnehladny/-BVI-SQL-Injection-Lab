@@ -12,6 +12,7 @@ import sk.fiit.bvi.lab.Entity.UserLab5;
 import sk.fiit.bvi.lab.Service.Lab5Service;
 import sk.fiit.bvi.lab.Utils.AlertUtils;
 import sk.fiit.bvi.lab.Utils.Constants;
+import sk.fiit.bvi.lab.Wrapper.EditWrapper;
 import sk.fiit.bvi.lab.Wrapper.LoginWrapper;
 
 import java.security.NoSuchAlgorithmException;
@@ -97,7 +98,8 @@ public class Lab5Controller {
     public String performProfileEdit(Lab5EditProfileDto newProfileData, HttpSession session, Model model) {
         String profileId = (String) session.getAttribute(Constants.PROFILE_ID_LAB_5);
         if(null != profileId) {
-            service.editUser(profileId, newProfileData);
+            EditWrapper editWrapper = service.editUser(profileId, newProfileData);
+            model.addAttribute("executedQuery", editWrapper.getQuery());
             List<UserLab5> users = service.getUser(profileId);
             if(!users.isEmpty()) {
                 model.addAttribute("currUser", users.get(0));
