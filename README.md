@@ -1,4 +1,20 @@
-# Running Project on Linux and Windows
+# Running Project with Docker
+
+## Requirements
+
+- Docker
+
+## Setup Instructions
+
+1. Build and run using docker-compose:
+   ```bash
+   docker-compose up --build
+   ```
+
+
+---
+
+# Running Project on Linux and Windows natively
 
 ## Requirements
 
